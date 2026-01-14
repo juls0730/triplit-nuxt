@@ -50,17 +50,21 @@ export default defineNuxtModule<ModuleOptions>({
 import type { TriplitClient, HttpClient } from '@triplit/client'
 import { schema } from '${schemaImportPath}'
 
-type AppSchema = typeof schema;
+type TriplitAppSchema = typeof schema;
 
 declare module '#app' {
   interface NuxtApp {
-    $triplit: TriplitClient<AppSchema> | HttpClient<AppSchema>
+    $triplit: TriplitClient<TriplitAppSchema> | HttpClient<TriplitAppSchema>
+  }
+
+  export {
+      TriplitAppSchema
   }
 }
 
 declare module 'vue' {
   interface ComponentCustomProperties {
-    $triplit: TriplitClient<AppSchema> | HttpClient<AppSchema>
+    $triplit: TriplitClient<TriplitAppSchema> | HttpClient<TriplitAppSchema>
   }
 }
 
