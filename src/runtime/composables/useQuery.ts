@@ -1,8 +1,16 @@
 import { ref, readonly, type Ref, onUnmounted } from 'vue'
-import type { SyncStatus, Models, Entity, CollectionNameFromModels, TriplitClient, HttpClient, QueryBuilder, WithInclusion, CollectionQuery } from '@triplit/client'
+import type {
+  SyncStatus,
+  Models,
+  TriplitClient,
+  HttpClient,
+  FetchResult,
+  SchemaQuery,
+} from '@triplit/client'
+import { useState } from '#app'
 
 export interface UseQueryReturn<T> {
-  results: Ref<T | null>
+  results: Ref<T>
   fetching: Ref<boolean>
   fetchingLocal: Ref<boolean>
   fetchingRemote: Ref<boolean>
@@ -14,62 +22,60 @@ export interface UseQueryReturn<T> {
  */
 export async function useQuery<
   M extends Models<M>,
-  CN extends CollectionNameFromModels<M>,
+  Q extends SchemaQuery<M>,
 >(
   triplit: TriplitClient<M> | HttpClient<M>,
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  query: QueryBuilder<M, CN, WithInclusion<CollectionQuery<M, CN>, {}>>,
+  query: Q,
   options: { syncStatus?: SyncStatus } = {},
 ) {
-  type T = Entity<M, CN>[]
+  type T = FetchResult<M, Q, 'many'> | undefined
 
-  const results = ref<T | null>(null)
+  const results = useState<T>()
   const fetching = ref(true)
-  const fetchingLocal = ref(true)
-  const fetchingRemote = ref(false)
+  const clientFetching = ref(true)
   const error = ref<Error | null>(null)
 
+  // TODO: handle errors better
   if (import.meta.server) {
     // SSR logic
     try {
-      if ('fetch' in triplit) {
-        const data = await triplit.fetch(query)
-        results.value = data as T
-      }
+      const data = await triplit.fetch(query)
+      results.value = data
     }
     catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err))
+      clientFetching.value = false
     }
     finally {
       fetching.value = false
-      fetchingLocal.value = false
     }
   }
-  else {
-    // Client logic
-    if ('subscribe' in triplit) {
-      const unsubscribe = triplit.subscribe(
-        query,
-        (data) => {
-          results.value = data as T
-          fetchingLocal.value = false
-          fetching.value = false
-        },
-        (err) => {
-          error.value = err as Error
-          fetching.value = false
-        },
-        options,
-      )
-      onUnmounted(unsubscribe)
-    }
+  else if ('subscribe' in triplit) {
+    // fetch items before subscribing so that we dont subscribe and get empty data immediately (because its fetching the data)
+    // then get the actual data when its ready (causing a flash of empty data)
+    await triplit.fetch(query)
+
+    const unsubscribe = triplit.subscribe(
+      query,
+      (data) => {
+        results.value = data
+        clientFetching.value = false
+        fetching.value = false
+      },
+      (err) => {
+        error.value = err as Error
+        clientFetching.value = false
+        fetching.value = false
+      },
+      options,
+    )
+    onUnmounted(unsubscribe)
   }
 
   return {
-    results: readonly(results) as Ref<T | null>,
+    results: readonly(results),
     fetching: readonly(fetching),
-    fetchingLocal: readonly(fetchingLocal),
-    fetchingRemote: readonly(fetchingRemote),
+    clientFetching: readonly(clientFetching),
     error: readonly(error),
   }
 }

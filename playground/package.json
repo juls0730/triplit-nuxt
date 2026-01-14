@@ -4,10 +4,12 @@
   "type": "module",
   "scripts": {
     "dev": "nuxi dev",
+    "triplit": "triplit dev",
     "build": "nuxi build",
     "generate": "nuxi generate"
   },
   "dependencies": {
+    "@triplit/client": "^1.0.50",
     "nuxt": "^4.2.2"
   }
 }

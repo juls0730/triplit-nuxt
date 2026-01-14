@@ -4,10 +4,25 @@ import { defu } from 'defu'
 import { join } from 'node:path'
 
 export interface ModuleOptions {
+  /**
+   * The URL of your Triplit server
+   */
   serverUrl?: string
+  /**
+   * The anonymous token for your triplit server
+   */
   token?: string
+  /**
+   * The path to your triplit schema file (must export `schema`)
+   */
   schema_path?: string
-  storage?: SimpleStorageOrInstances
+  /**
+   * The storage to use (default: `indexeddb`, either `memory` or `indexeddb`)
+   */
+  storage?: 'indexeddb' | 'memory' | SimpleStorageOrInstances
+  /**
+   * Automatically connect to the server on startup (default: `true`)
+   */
   autoConnect?: boolean
 }
 
@@ -20,7 +35,7 @@ export default defineNuxtModule<ModuleOptions>({
     serverUrl: '',
     token: '',
     schema_path: './triplit/schema.ts',
-    storage: 'indexeddb' as SimpleStorageOrInstances,
+    storage: 'indexeddb',
     autoConnect: true,
   },
   async setup(options, nuxt) {
@@ -60,7 +75,7 @@ export {}
     nuxt.options.runtimeConfig.public.triplit = defu(nuxt.options.runtimeConfig.public.triplit, {
       serverUrl: options.serverUrl || process.env.NUXT_PUBLIC_TRIPLIT_SERVER_URL || '',
       token: options.token || process.env.NUXT_ANON_TRIPLIT_TOKEN || '',
-      storage: options.storage || 'indexeddb' as SimpleStorageOrInstances,
+      storage: options.storage || 'indexeddb',
       autoConnect: options.autoConnect ?? true,
     })
   },
