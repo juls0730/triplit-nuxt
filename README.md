@@ -94,6 +94,9 @@ That's it! You can now use Triplit in your Nuxt app with full SSR support ✨
 
 ## Composables
 
+### Client
+- **`useTriplitClient()`** - Get the Triplit client instance
+
 ### Data Fetching
 - **`useQuery(query)`** - Subscribe to a query (multiple results)
 - **`useQueryOne(query)`** - Subscribe to a single entity

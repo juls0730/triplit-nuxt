@@ -60,6 +60,29 @@ NUXT_PUBLIC_TRIPLIT_TOKEN=eyJhbGc...
 
 ## Composables
 
+### useTriplitClient
+
+Get the Triplit client instance directly.
+
+**Returns:**
+```typescript
+TriplitClient | HttpClient  // The current client instance
+```
+
+**On Server:** Returns `HttpClient` (HTTP API client)  
+**On Client:** Returns `TriplitClient` (WebSocket client)
+
+**Example:**
+
+```typescript
+const client = useTriplitClient()
+
+// Create custom queries
+const query = client.query('posts').Where('published', '=', true)
+
+// You can use this in other composables or for advanced operations
+```
+
 ### useQuery
 
 Subscribe to multiple entities matching a query.

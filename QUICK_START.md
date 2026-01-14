@@ -27,6 +27,11 @@ NUXT_PUBLIC_TRIPLIT_TOKEN=eyJhbGc...
 
 ## Composables Quick Reference
 
+### Get Client
+```typescript
+const client = useTriplitClient()
+```
+
 ### Reading Data
 
 ```typescript
