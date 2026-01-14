@@ -1,6 +1,26 @@
 # Changelog
 
 
+## v0.1.4
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.3...v0.1.4)
+
+### 🩹 Fixes
+
+- Fix bugs, add license, and other stuff ([fa056e4](https://github.com/juls0730/triplit-nuxt/commit/fa056e4))
+- Fix types hopefully ([6be308a](https://github.com/juls0730/triplit-nuxt/commit/6be308a))
+
+### 🏡 Chore
+
+- **release:** V0.1.1 ([170cc79](https://github.com/juls0730/triplit-nuxt/commit/170cc79))
+- **release:** V0.1.2 ([19c6214](https://github.com/juls0730/triplit-nuxt/commit/19c6214))
+- **release:** V0.1.3 ([670e362](https://github.com/juls0730/triplit-nuxt/commit/670e362))
+- **release:** V0.1.3 ([4fc3717](https://github.com/juls0730/triplit-nuxt/commit/4fc3717))
+
+### ❤️ Contributors
+
+- Zoe ([@juls0730](https://github.com/juls0730))
+
 ## v0.1.3
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.3...v0.1.3)
