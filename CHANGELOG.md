@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.1.2
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.3...v0.1.2)
+
+### 🩹 Fixes
+
+- Fix bugs, add license, and other stuff ([fa056e4](https://github.com/juls0730/triplit-nuxt/commit/fa056e4))
+
+### 🏡 Chore
+
+- **release:** V0.1.1 ([170cc79](https://github.com/juls0730/triplit-nuxt/commit/170cc79))
+
+### ❤️ Contributors
+
+- Zoe ([@juls0730](https://github.com/juls0730))
+
 ## v0.1.1
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.3...v0.1.1)
