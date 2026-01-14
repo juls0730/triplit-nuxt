@@ -19,7 +19,7 @@ export async function useQuery<
   triplit: TriplitClient<M> | HttpClient<M>,
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   query: QueryBuilder<M, CN, WithInclusion<CollectionQuery<M, CN>, {}>>,
-  options: { syncStatus?: SyncStatus },
+  options: { syncStatus?: SyncStatus } = {},
 ) {
   type T = Entity<M, CN>[]
 
