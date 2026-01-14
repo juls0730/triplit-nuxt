@@ -1,3 +1,4 @@
+import { useNuxtApp } from '#app'
 import type { TriplitClient, HttpClient } from '@triplit/client'
 
 /**
@@ -6,6 +7,6 @@ import type { TriplitClient, HttpClient } from '@triplit/client'
  * On client: returns TriplitClient
  */
 export function useTriplitClient(): TriplitClient | HttpClient {
-  const nuxtApp = useNuxtApp()
-  return nuxtApp.$triplit as TriplitClient | HttpClient
+    const nuxtApp = useNuxtApp()
+    return nuxtApp.$triplit as TriplitClient | HttpClient
 }
