@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.5
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.4...v0.1.5)
+
+### 🩹 Fixes
+
+- Actually fix types (hopefully) ([fce04c7](https://github.com/juls0730/triplit-nuxt/commit/fce04c7))
+
+### ❤️ Contributors
+
+- Zoe ([@juls0730](https://github.com/juls0730))
+
 ## v0.1.4
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.3...v0.1.4)
