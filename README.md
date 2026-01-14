@@ -1,11 +1,20 @@
-# @nuxtjs/triplit
+# triplit-nuxt
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-SSR-ready Triplit composables for Nuxt 4.x. Seamlessly integrate real-time database syncing with full server-side rendering support.
+> [!NOTE] 
+> This module was written in a few hours with the help of LLMs. I have, of 
+> course, put my own effort into fixing the crap that was generated, and I am 
+> actively using this module. I think I will *soon* have a blog about my 
+> thoughts and experiences with AI assisted code generation, so stay tuned! 
+> Also, if you encounter any bugs or  issues, please open an issue on GitHub, 
+> DM me on twitter (@julie4055_) or email me (juls07@juls07.dev).
+
+SSR-ready Triplit composables for Nuxt 4.x. Seamlessly integrate real-time 
+database syncing with full server-side rendering support.
 
 - [✨ &nbsp;Release Notes](/CHANGELOG.md)
 
@@ -24,19 +33,14 @@ SSR-ready Triplit composables for Nuxt 4.x. Seamlessly integrate real-time datab
 Install the module to your Nuxt application:
 
 ```bash
-npm install @nuxtjs/triplit @triplit/client
+npm install triplit-nuxt @triplit/client
 ```
 
 Add it to your `nuxt.config.ts`:
 
 ```typescript
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/triplit'],
-  triplit: {
-    serverUrl: process.env.TRIPLIT_SERVER_URL,
-    token: process.env.TRIPLIT_TOKEN,
-    storage: 'indexeddb',
-  },
+  modules: ['triplit-nuxt'],
 })
 ```
 
@@ -44,13 +48,14 @@ Set your environment variables:
 
 ```env
 NUXT_PUBLIC_TRIPLIT_SERVER_URL=https://your-project.triplit.io
-NUXT_PUBLIC_TRIPLIT_TOKEN=your-anonymous-token
+NUXT_ANON_TRIPLIT_TOKEN=your-anonymous-token
 ```
 
 Now use the composables in your components:
 
 ```vue
 <script setup lang="ts">
+const client = useTriplitClient()
 const { results: todos, fetching } = useQuery(
   client.query('todos').Where('completed', '=', false)
 )
@@ -58,6 +63,16 @@ const { results: todos, fetching } = useQuery(
 ```
 
 That's it! You can now use Triplit in your Nuxt app with full SSR support ✨
+
+## Configuration
+
+You can configure the module in your `nuxt.config.ts`. The following options are available:
+
+- **`serverUrl`** - The URL of your Triplit server (required, can be set with `NUXT_PUBLIC_TRIPLIT_SERVER_URL` env var)
+- **`token`** - The token for your project (required, can be set with `NUXT_ANON_TRIPLIT_TOKEN` env var)
+- **`schema_path`** - The path to your schema file (default: `./triplit/schema.ts`)
+- **`storage`** - The IndexedDB storage configuration (default: `indexeddb`)
+- **`autoConnect`** - Automatically connect to the server on startup (default: `true`)
 
 
 ## Contribution
@@ -72,21 +87,7 @@ That's it! You can now use Triplit in your Nuxt app with full SSR support ✨
   # Generate type stubs
   npm run dev:prepare
   
-  # Develop with the playground
-  npm run dev
-  
-  # Build the playground
-  npm run dev:build
-  
-  # Run ESLint
-  npm run lint
-  
-  # Run Vitest
-  npm run test
-  npm run test:watch
-  
-  # Release new version
-  npm run release
+  # TODO: write a playground (my bad)
   ```
 
 </details>
@@ -102,22 +103,14 @@ That's it! You can now use Triplit in your Nuxt app with full SSR support ✨
 - **`useQueryOne(query)`** - Subscribe to a single entity
 - **`useConnectionStatus()`** - Monitor connection status
 
-### Data Mutations
-- **`useInsert()`** - Insert new entities
-- **`useUpdate()`** - Update existing entities
-- **`useDelete()`** - Delete entities
-
 All composables are SSR-ready and handle server/client differences automatically.
-
-## Documentation
-
-For full documentation, see [DOCUMENTATION.md](./DOCUMENTATION.md)
 
 ## Examples
 
 ### Basic Query
 
 ```typescript
+const client = useTriplitClient()
 const { results: posts, fetching } = useQuery(
   client.query('posts').Order('createdAt', 'DESC')
 )
@@ -126,10 +119,10 @@ const { results: posts, fetching } = useQuery(
 ### With Insert
 
 ```typescript
-const { insert, loading } = useInsert()
+const client = useTriplitClient()
 
 const handleCreate = async () => {
-  await insert('posts', {
+  await client.insert('posts', {
     title: 'New Post',
     content: 'Post content',
   })
@@ -153,14 +146,14 @@ The module automatically:
 - Supports offline-first patterns
 
 <!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/@nuxtjs/triplit/latest.svg?style=flat&colorA=020420&colorB=00DC82
-[npm-version-href]: https://npmjs.com/package/@nuxtjs/triplit
+[npm-version-src]: https://img.shields.io/npm/v/triplit-nuxt/latest.svg?style=flat&colorA=020420&colorB=00DC82
+[npm-version-href]: https://npmjs.com/package/triplit-nuxt
 
-[npm-downloads-src]: https://img.shields.io/npm/dm/@nuxtjs/triplit.svg?style=flat&colorA=020420&colorB=00DC82
-[npm-downloads-href]: https://npm.chart.dev/@nuxtjs/triplit
+[npm-downloads-src]: https://img.shields.io/npm/dm/triplit-nuxt.svg?style=flat&colorA=020420&colorB=00DC82
+[npm-downloads-href]: https://npm.chart.dev/triplit-nuxt
 
-[license-src]: https://img.shields.io/npm/l/@nuxtjs/triplit.svg?style=flat&colorA=020420&colorB=00DC82
-[license-href]: https://npmjs.com/package/@nuxtjs/triplit
+[license-src]: https://img.shields.io/npm/l/triplit-nuxt.svg?style=flat&colorA=020420&colorB=00DC82
+[license-href]: https://npmjs.com/package/triplit-nuxt
 
 [nuxt-src]: https://img.shields.io/badge/Nuxt-020420?logo=nuxt
 [nuxt-href]: https://nuxt.com

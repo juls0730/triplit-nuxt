@@ -1,12 +1,13 @@
 import { defineNuxtModule, addPlugin, createResolver, addImportsDir, addTypeTemplate } from '@nuxt/kit'
+import type { SimpleStorageOrInstances } from '@triplit/client'
 import { defu } from 'defu'
-import type { Schema } from '@triplit/client'
+import { join } from 'node:path'
 
 export interface ModuleOptions {
   serverUrl?: string
   token?: string
-  schema?: Schema
-  storage?: 'memory' | 'indexeddb' | { type: 'indexeddb', name: string }
+  schema_path?: string
+  storage?: SimpleStorageOrInstances
   autoConnect?: boolean
 }
 
@@ -18,11 +19,39 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {
     serverUrl: '',
     token: '',
-    storage: 'indexeddb',
+    schema_path: './triplit/schema.ts',
+    storage: 'indexeddb' as SimpleStorageOrInstances,
     autoConnect: true,
   },
   async setup(options, nuxt) {
     const resolver = createResolver(import.meta.url)
+
+    const schemaImportPath = join(nuxt.options.rootDir, options.schema_path!)
+
+    // 2. Add the dynamic type template
+    addTypeTemplate({
+      filename: 'types/triplit.d.ts',
+      getContents: () => `
+import type { TriplitClient, HttpClient } from '@triplit/client'
+import { schema } from '${schemaImportPath}'
+
+type AppSchema = typeof schema;
+
+declare module '#app' {
+  interface NuxtApp {
+    $triplit: TriplitClient<AppSchema> | HttpClient<AppSchema>
+  }
+}
+
+declare module 'vue' {
+  interface ComponentCustomProperties {
+    $triplit: TriplitClient<AppSchema> | HttpClient<AppSchema>
+  }
+}
+
+export {}
+      `,
+    })
 
     addPlugin(resolver.resolve('./runtime/plugin'))
 
@@ -30,24 +59,9 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.runtimeConfig.public.triplit = defu(nuxt.options.runtimeConfig.public.triplit, {
       serverUrl: options.serverUrl || process.env.NUXT_PUBLIC_TRIPLIT_SERVER_URL || '',
-      token: options.token || process.env.NUXT_PUBLIC_TRIPLIT_TOKEN || '',
-      storage: options.storage || 'indexeddb',
+      token: options.token || process.env.NUXT_ANON_TRIPLIT_TOKEN || '',
+      storage: options.storage || 'indexeddb' as SimpleStorageOrInstances,
       autoConnect: options.autoConnect ?? true,
-    })
-
-    addTypeTemplate({
-      filename: 'types/triplit.d.ts',
-      getContents: () => `
-import type { TriplitClient } from '@triplit/client'
-
-declare module '#app' {
-  interface NuxtApp {
-    $triplit: TriplitClient
-  }
-}
-
-export {}
-      `
     })
   },
 })
