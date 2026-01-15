@@ -82,24 +82,15 @@ export {}
 
     addImportsDir(resolver.resolve('./runtime/composables'))
 
-    // Add to transpile list
-    nuxt.options.build.transpile.push('@triplit/client', '@triplit/db')
-
-    // Also explicitly tell Vite to handle them
     nuxt.options.vite.optimizeDeps = nuxt.options.vite.optimizeDeps || {}
-    nuxt.options.vite.optimizeDeps.include
-      = nuxt.options.vite.optimizeDeps.include || []
+    nuxt.options.vite.optimizeDeps.include =
+      nuxt.options.vite.optimizeDeps.include || []
     nuxt.options.vite.optimizeDeps.include.push(
       '@triplit/client',
-      '@triplit/db',
     )
 
-    nuxt.options.vite.ssr = nuxt.options.vite.ssr || {}
-    nuxt.options.vite.ssr.noExternal = nuxt.options.vite.ssr.noExternal || []
-
-    if (Array.isArray(nuxt.options.vite.ssr.noExternal)) {
-      nuxt.options.vite.ssr.noExternal.push('@triplit/client', '@triplit/db')
-    }
+    nuxt.options.build.transpile = nuxt.options.build.transpile || []
+    nuxt.options.build.transpile.push('@triplit/client')
 
     nuxt.options.runtimeConfig.public.triplit = defu(
       nuxt.options.runtimeConfig.public.triplit,
