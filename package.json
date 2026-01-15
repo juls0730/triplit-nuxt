@@ -1,6 +1,6 @@
 {
     "name": "triplit-nuxt",
-    "version": "0.1.10",
+    "version": "0.2.0",
     "description": "SSR-ready Triplit composables for Nuxt 4.x",
     "repository": "juls0730/triplit-nuxt",
     "license": "CC0-1.0",

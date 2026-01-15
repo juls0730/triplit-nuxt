@@ -91,9 +91,7 @@ You can configure the module in your `nuxt.config.ts`. The following options are
   
   # Generate type stubs
   npm run dev:prepare
-  
-  # TODO: write a playground (my bad)
-  ```
+    ```
 
 </details>
 
@@ -105,8 +103,8 @@ You can configure the module in your `nuxt.config.ts`. The following options are
 
 ### Data Fetching
 
-- **`useQuery(query)`** - Subscribe to a query (multiple results)
-- **`useQueryOne(query)`** - Subscribe to a single entity
+- **`useQuery('key', triplit, triplit.query('table))`** - Subscribe to a query (multiple results)
+- **`useQueryOne('key', triplit, triplit.query('table))`** - Subscribe to a single entity
 - **`useConnectionStatus()`** - Monitor connection status
 
 All composables are SSR-ready and handle server/client differences automatically.
@@ -121,10 +119,15 @@ All you need to do is start the triplit server (`npm run triplit`) run
 
 ```typescript
 const client = useTriplitClient();
-const { results: posts, fetching } = useQuery(
+const { results: posts, fetching, unsubscribe } = useQuery(
+    'posts',
   client,
   client.query("posts").Order("createdAt", "DESC")
 );
+
+onUnmounted(() => {
+  unsubscribe?.();
+});
 ```
 
 ### With Insert
@@ -143,7 +146,11 @@ const handleCreate = async () => {
 ### Monitoring Connection
 
 ```typescript
-const { status } = useConnectionStatus();
+const { status, unsubscribe } = useConnectionStatus();
+
+onUnmounted(() => {
+  unsubscribe?.();
+});
 
 // status is 'OPEN' | 'CLOSED' | 'CONNECTING'
 ```

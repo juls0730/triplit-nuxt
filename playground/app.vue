@@ -7,7 +7,7 @@ onMounted(() => {
   loading.value = false
 })
 
-const { results: todos, clientFetching } = await useQuery(triplit, triplit.query('todos').Order('createdAt', 'ASC'))
+const { results: todos, clientFetching, unsubscribe } = await useQuery('todos', triplit, triplit.query('todos').Order('createdAt', 'ASC'))
 
 if (todos.value === undefined) {
   throw new Error('undefined todos. Is the triplit server running?')
@@ -23,6 +23,10 @@ const addTodo = async () => {
 const changeTodo = async (id: string, completed: boolean) => {
   await triplit.update('todos', id, { completed })
 }
+
+onUnmounted(() => {
+  unsubscribe?.()
+})
 </script>
 
 <template>

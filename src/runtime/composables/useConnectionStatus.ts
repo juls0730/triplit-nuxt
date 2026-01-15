@@ -1,9 +1,10 @@
-import { ref, readonly, type Ref, onScopeDispose } from 'vue'
+import { ref, readonly, type Ref } from 'vue'
 import type { TriplitClient, HttpClient, ConnectionStatus } from '@triplit/client'
 import { useNuxtApp } from '#app'
 
 export interface UseConnectionStatusReturn {
   status: Readonly<Ref<ConnectionStatus>>
+  unsubscribe?: () => void
 }
 
 /**
@@ -18,19 +19,19 @@ export function useConnectionStatus(): UseConnectionStatusReturn {
     import.meta.server ? 'OPEN' : 'CONNECTING',
   )
 
+  let unsubscribe: (() => void) | undefined = undefined
   if (!import.meta.server && client && 'connectionStatus' in client) {
     status.value = (client as TriplitClient).connectionStatus
 
-    const unsubscribe = (client as TriplitClient).onConnectionStatusChange(
+    unsubscribe = (client as TriplitClient).onConnectionStatusChange(
       (newStatus) => {
         status.value = newStatus
       },
     )
-
-    onScopeDispose(unsubscribe)
   }
 
   return {
     status: readonly(status),
+    unsubscribe,
   }
 }

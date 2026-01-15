@@ -1,4 +1,4 @@
-import { ref, readonly, onScopeDispose, type Ref } from 'vue'
+import { ref, readonly, type Ref } from 'vue'
 import type {
   TriplitClient,
   HttpClient,
@@ -35,17 +35,19 @@ export async function useQueryOne<
   M extends Models<M>,
   Q extends SchemaQuery<M>,
 >(
+  key: string,
   triplit: TriplitClient<M> | HttpClient<M>,
   query: Q,
   options: { syncStatus?: SyncStatus } = {},
 ) {
   type T = FetchResult<M, Q, 'one'> | undefined
 
-  const result = useState<T>()
+  const result = useState<T>(key)
   const fetching = ref(true)
   const clientFetching = ref(true)
   const error = ref<Error | null>(null)
 
+  let unsubscribe: (() => void) | undefined = undefined
   if (import.meta.server) {
     try {
       const data = await triplit.fetchOne(query)
@@ -62,7 +64,7 @@ export async function useQueryOne<
   else if ('subscribe' in triplit) {
     await triplit.fetchOne(query)
 
-    const unsubscribe = triplit.subscribe(
+    unsubscribe = triplit.subscribe(
       query,
       (data) => {
         result.value = data?.[0] || undefined
@@ -76,8 +78,6 @@ export async function useQueryOne<
       },
       options,
     )
-
-    onScopeDispose(unsubscribe)
   }
 
   return {
@@ -85,5 +85,6 @@ export async function useQueryOne<
     fetching: readonly(fetching),
     clientFetching: readonly(clientFetching),
     error: readonly(error),
+    unsubscribe,
   }
 }

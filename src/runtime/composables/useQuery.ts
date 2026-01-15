@@ -1,4 +1,4 @@
-import { ref, readonly, type Ref, onScopeDispose } from 'vue'
+import { ref, readonly, type Ref } from 'vue'
 import type {
   SyncStatus,
   Models,
@@ -24,17 +24,19 @@ export async function useQuery<
   M extends Models<M>,
   Q extends SchemaQuery<M>,
 >(
+  key: string,
   triplit: TriplitClient<M> | HttpClient<M>,
   query: Q,
   options: { syncStatus?: SyncStatus } = {},
 ) {
   type T = FetchResult<M, Q, 'many'> | undefined
 
-  const results = useState<T>()
+  const results = useState<T>(key)
   const fetching = ref(true)
   const clientFetching = ref(true)
   const error = ref<Error | null>(null)
 
+  let unsubscribe: (() => void) | undefined = undefined
   // TODO: handle errors better
   if (import.meta.server) {
     // SSR logic
@@ -55,7 +57,7 @@ export async function useQuery<
     // then get the actual data when its ready (causing a flash of empty data)
     await triplit.fetch(query)
 
-    const unsubscribe = triplit.subscribe(
+    unsubscribe = triplit.subscribe(
       query,
       (data) => {
         results.value = data
@@ -69,7 +71,6 @@ export async function useQuery<
       },
       options,
     )
-    onScopeDispose(unsubscribe)
   }
 
   return {
@@ -77,5 +78,6 @@ export async function useQuery<
     fetching: readonly(fetching),
     clientFetching: readonly(clientFetching),
     error: readonly(error),
+    unsubscribe,
   }
 }

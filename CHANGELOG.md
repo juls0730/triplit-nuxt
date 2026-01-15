@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.0
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.10...v0.2.0)
+
+### 💥 Breaking Changes
+
+- query composables now use a key in order to properly sync state between the server and client
+- query composables now return an unsubscribe function, it is your responsibility to call it when the component is unmounted
 
 ## v0.1.10
 
