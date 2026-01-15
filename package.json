@@ -38,7 +38,7 @@
         "defu": "^6.1.4"
     },
     "peerDependencies": {
-        "@triplit/client": "^1.0.0"
+        "@triplit/client": "^1.0.50"
     },
     "devDependencies": {
         "@nuxt/devtools": "^3.1.1",

@@ -1,51 +1,57 @@
-import { defineNuxtModule, addPlugin, createResolver, addImportsDir, addTypeTemplate } from '@nuxt/kit'
-import type { SimpleStorageOrInstances } from '@triplit/client'
-import { defu } from 'defu'
-import { join } from 'node:path'
+import {
+  defineNuxtModule,
+  addPlugin,
+  createResolver,
+  addImportsDir,
+  addTypeTemplate,
+} from "@nuxt/kit";
+import type { SimpleStorageOrInstances } from "@triplit/client";
+import { defu } from "defu";
+import { join } from "node:path";
 
 export interface ModuleOptions {
   /**
    * The URL of your Triplit server
    */
-  serverUrl?: string
+  serverUrl?: string;
   /**
    * The anonymous token for your triplit server
    */
-  token?: string
+  token?: string;
   /**
    * The path to your triplit schema file (must export `schema`)
    */
-  schema_path?: string
+  schema_path?: string;
   /**
    * The storage to use (default: `indexeddb`, either `memory` or `indexeddb`)
    */
-  storage?: 'indexeddb' | 'memory' | SimpleStorageOrInstances
+  storage?: "indexeddb" | "memory" | SimpleStorageOrInstances;
   /**
    * Automatically connect to the server on startup (default: `true`)
    */
-  autoConnect?: boolean
+  autoConnect?: boolean;
 }
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: '@nuxtjs/triplit',
-    configKey: 'triplit',
+    name: "@nuxtjs/triplit",
+    configKey: "triplit",
   },
   defaults: {
-    serverUrl: '',
-    token: '',
-    schema_path: './triplit/schema.ts',
-    storage: 'indexeddb',
+    serverUrl: "",
+    token: "",
+    schema_path: "./triplit/schema.ts",
+    storage: "indexeddb",
     autoConnect: true,
   },
   async setup(options, nuxt) {
-    const resolver = createResolver(import.meta.url)
+    const resolver = createResolver(import.meta.url);
 
-    const schemaImportPath = join(nuxt.options.rootDir, options.schema_path!)
+    const schemaImportPath = join(nuxt.options.rootDir, options.schema_path!);
 
     // 2. Add the dynamic type template
     addTypeTemplate({
-      filename: 'types/triplit.d.ts',
+      filename: "types/triplit.d.ts",
       getContents: () => `
 import type { TriplitClient, HttpClient } from '@triplit/client'
 import { schema } from '${schemaImportPath}'
@@ -70,17 +76,40 @@ declare module 'vue' {
 
 export {}
       `,
-    })
+    });
 
-    addPlugin(resolver.resolve('./runtime/plugin'))
+    addPlugin(resolver.resolve("./runtime/plugin"));
 
-    addImportsDir(resolver.resolve('./runtime/composables'))
+    addImportsDir(resolver.resolve("./runtime/composables"));
 
-    nuxt.options.runtimeConfig.public.triplit = defu(nuxt.options.runtimeConfig.public.triplit, {
-      serverUrl: options.serverUrl || process.env.NUXT_PUBLIC_TRIPLIT_SERVER_URL || '',
-      token: options.token || process.env.NUXT_ANON_TRIPLIT_TOKEN || '',
-      storage: options.storage || 'indexeddb',
-      autoConnect: options.autoConnect ?? true,
-    })
+    // Add to transpile list
+    nuxt.options.build.transpile.push("@triplit/client", "sorted-btree");
+
+    // Also explicitly tell Vite to handle them
+    nuxt.options.vite.optimizeDeps = nuxt.options.vite.optimizeDeps || {};
+    nuxt.options.vite.optimizeDeps.include =
+      nuxt.options.vite.optimizeDeps.include || [];
+    nuxt.options.vite.optimizeDeps.include.push(
+      "@triplit/client",
+      "sorted-btree",
+    );
+
+    nuxt.options.vite.ssr = nuxt.options.vite.ssr || {};
+    nuxt.options.vite.ssr.noExternal = nuxt.options.vite.ssr.noExternal || [];
+
+    if (Array.isArray(nuxt.options.vite.ssr.noExternal)) {
+      nuxt.options.vite.ssr.noExternal.push("@triplit/client", "sorted-btree");
+    }
+
+    nuxt.options.runtimeConfig.public.triplit = defu(
+      nuxt.options.runtimeConfig.public.triplit,
+      {
+        serverUrl:
+          options.serverUrl || process.env.NUXT_PUBLIC_TRIPLIT_SERVER_URL || "",
+        token: options.token || process.env.NUXT_ANON_TRIPLIT_TOKEN || "",
+        storage: options.storage || "indexeddb",
+        autoConnect: options.autoConnect ?? true,
+      },
+    );
   },
-})
+});

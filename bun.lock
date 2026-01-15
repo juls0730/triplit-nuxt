@@ -23,7 +23,7 @@
         "vue-tsc": "^3.2.2",
       },
       "peerDependencies": {
-        "@triplit/client": "^1.0.0",
+        "@triplit/client": "^1.0.50",
       },
     },
   },
