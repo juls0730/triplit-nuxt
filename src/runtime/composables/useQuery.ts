@@ -1,4 +1,4 @@
-import { ref, readonly, type Ref, onUnmounted } from 'vue'
+import { ref, readonly, type Ref, onScopeDispose } from 'vue'
 import type {
   SyncStatus,
   Models,
@@ -69,7 +69,7 @@ export async function useQuery<
       },
       options,
     )
-    onUnmounted(unsubscribe)
+    onScopeDispose(unsubscribe)
   }
 
   return {

@@ -1,4 +1,4 @@
-import { ref, readonly, onUnmounted, type Ref } from 'vue'
+import { ref, readonly, onScopeDispose, type Ref } from 'vue'
 import type {
   TriplitClient,
   HttpClient,
@@ -77,7 +77,7 @@ export async function useQueryOne<
       options,
     )
 
-    onUnmounted(unsubscribe)
+    onScopeDispose(unsubscribe)
   }
 
   return {

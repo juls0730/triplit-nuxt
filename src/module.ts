@@ -7,6 +7,7 @@ import {
 } from '@nuxt/kit'
 import type { SimpleStorageOrInstances } from '@triplit/client'
 import { defu } from 'defu'
+import { warn } from 'node:console'
 import { join } from 'node:path'
 
 export interface ModuleOptions {
@@ -82,9 +83,25 @@ export {}
 
     addImportsDir(resolver.resolve('./runtime/composables'))
 
+    nuxt.options.vite.build = nuxt.options.vite.build || {}
+    nuxt.options.vite.build.rollupOptions = nuxt.options.vite.build.rollupOptions || {}
+
+    const existingOnWarn = nuxt.options.vite.build.rollupOptions.onwarn
+    nuxt.options.vite.build.rollupOptions.onwarn = (warning, rollupWarn) => {
+        // make the warning about HttpClient being imported from external module because triplit loveas its barrel files (grrr)
+      if (warning.code === 'UNUSED_EXTERNAL_IMPORT' && warning.exporter?.includes('@triplit/db') && warning.names?.includes('HttpClient')) {
+        return
+      }
+
+      if (typeof existingOnWarn === 'function') {
+        existingOnWarn(warning, rollupWarn)
+      } else {
+        rollupWarn(warning)
+      }
+    }
+
     nuxt.options.vite.optimizeDeps = nuxt.options.vite.optimizeDeps || {}
-    nuxt.options.vite.optimizeDeps.include =
-      nuxt.options.vite.optimizeDeps.include || []
+    nuxt.options.vite.optimizeDeps.include = nuxt.options.vite.optimizeDeps.include || []
     nuxt.options.vite.optimizeDeps.include.push(
       '@triplit/client',
     )

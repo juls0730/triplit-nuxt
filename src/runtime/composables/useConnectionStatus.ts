@@ -1,4 +1,4 @@
-import { ref, readonly, onUnmounted, type Ref } from 'vue'
+import { ref, readonly, type Ref, onScopeDispose } from 'vue'
 import type { TriplitClient, HttpClient, ConnectionStatus } from '@triplit/client'
 import { useNuxtApp } from '#app'
 
@@ -27,9 +27,7 @@ export function useConnectionStatus(): UseConnectionStatusReturn {
       },
     )
 
-    onUnmounted(() => {
-      unsubscribe()
-    })
+    onScopeDispose(unsubscribe)
   }
 
   return {
