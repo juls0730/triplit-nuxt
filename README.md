@@ -42,6 +42,13 @@ export default defineNuxtConfig({
 });
 ```
 
+> [!NOTE]
+> Unfortunately, you will see a warning in the console that "HttpClient" is 
+> imported from external module. As far as I know, this is because of triplit,
+> and has nothing to do with me, and as far as I know, there is nothing I can
+> do about it. I will try to fix this in the future, if you know a fix, please
+> make a PR!
+
 Set your environment variables:
 
 ```env

@@ -1,5 +1,11 @@
 import { defineNuxtPlugin } from '#app'
-import { TriplitClient, HttpClient, type ClientOptions, type Models, type SimpleStorageOrInstances } from '@triplit/client'
+import {
+  TriplitClient,
+  HttpClient,
+  type ClientOptions,
+  type Models,
+  type SimpleStorageOrInstances,
+} from '@triplit/client'
 
 export default defineNuxtPlugin({
   enforce: 'pre',
