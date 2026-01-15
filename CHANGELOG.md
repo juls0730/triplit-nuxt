@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.10
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.9...v0.1.10)
+
+### 🏡 Chore
+
+- Remove non-functional warning suppressing code ([4554de2](https://github.com/juls0730/triplit-nuxt/commit/4554de2))
+
+### ❤️ Contributors
+
+- Zoe ([@juls0730](https://github.com/juls0730))
+
 ## v0.1.9
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.8...v0.1.9)
