@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.8
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.7...v0.1.8)
+
+### 🩹 Fixes
+
+- Actually fix bundling ([9ba1085](https://github.com/juls0730/triplit-nuxt/commit/9ba1085))
+
+### ❤️ Contributors
+
+- Zoe ([@juls0730](https://github.com/juls0730))
+
 ## v0.1.7
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.6...v0.1.7)
