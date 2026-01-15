@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.9
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.8...v0.1.9)
+
+### 🩹 Fixes
+
+- Use onScopeDispose instead of onUnmount, and hide warning about HttpClient ([5df20f2](https://github.com/juls0730/triplit-nuxt/commit/5df20f2))
+
+### ❤️ Contributors
+
+- Zoe ([@juls0730](https://github.com/juls0730))
+
 ## v0.1.8
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.7...v0.1.8)
