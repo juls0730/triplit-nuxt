@@ -114,7 +114,7 @@ export {}
       }
 
       const tokenType = JSON.parse(atob(parts[1]!))['x-triplit-token-type']
-      if (tokenType !== 'anonymous') {
+      if (tokenType !== 'anon') {
         const errorMessage
           = '[triplit-nuxt] Security alert: You are using a token with a type of "' + tokenType + '". '
             + 'This will allow unauthenticated users to access data they should not have access to. '
