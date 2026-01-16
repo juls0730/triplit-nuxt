@@ -62,6 +62,7 @@ Now use the composables in your components:
 <script setup lang="ts">
 const client = useTriplitClient();
 const { results: todos, fetching } = useQuery(
+  'todos'.
   client,
   client.query("todos").Where("completed", "=", false)
 );
@@ -110,6 +111,8 @@ You can configure the module in your `nuxt.config.ts`. The following options are
 All composables are SSR-ready and handle server/client differences automatically.
 
 ## Examples
+
+<!-- TODO: way better docs on something like a https://auth.sidebase.io/ -->
 
 There is a full example in the [playground](https://github.com/triplit/triplit-nuxt/tree/trunk/playground) folder.
 All you need to do is start the triplit server (`npm run triplit`) run

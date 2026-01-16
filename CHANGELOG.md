@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.1
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.2.0...v0.2.1)
+
+### 🧑‍💻 DX Changes
+
+- Add an error message when using a non-anonymous token, and add a config option to skip this error
+
 ## v0.2.0
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.1.10...v0.2.0)
