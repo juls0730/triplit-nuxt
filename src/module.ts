@@ -18,6 +18,7 @@ export interface ModuleOptions {
    * The anonymous token for your triplit server
    */
   token?: string
+  dangerouslyAllowNonAnonymousTokens?: boolean
   /**
    * The path to your triplit schema file (must export `schema`)
    */
@@ -40,6 +41,7 @@ export default defineNuxtModule<ModuleOptions>({
   defaults: {
     serverUrl: '',
     token: '',
+    dangerouslyAllowNonAnonymousTokens: false,
     schema_path: './triplit/schema.ts',
     storage: 'indexeddb',
     autoConnect: true,
@@ -97,9 +99,30 @@ export {}
         serverUrl:
           options.serverUrl || process.env.NUXT_PUBLIC_TRIPLIT_SERVER_URL || '',
         token: options.token || process.env.NUXT_ANON_TRIPLIT_TOKEN || '',
+        dangerouslyAllowNonAnonymousTokens: options.dangerouslyAllowNonAnonymousTokens || false,
         storage: options.storage || 'indexeddb',
         autoConnect: options.autoConnect ?? true,
       },
     )
+
+    const { token, dangerouslyAllowNonAnonymousTokens } = nuxt.options.runtimeConfig.public.triplit
+
+    if (token && !dangerouslyAllowNonAnonymousTokens) {
+      const parts = token.split('.')
+      if (parts.length !== 3) {
+        throw new Error('Invalid token')
+      }
+
+      const tokenType = JSON.parse(atob(parts[1]!))['x-triplit-token-type']
+      if (tokenType !== 'anonymous') {
+        const errorMessage
+          = '[triplit-nuxt] Security alert: You are using a token with a type of "' + tokenType + '". '
+            + 'This will allow unauthenticated users to access data they should not have access to. '
+            + 'Please use a token with type "anonymous" in your config, or add the key '
+            + '"dangerouslyAllowNonAnonymousTokens" to your config with a value of true to skip this error.'
+
+        throw new Error(errorMessage)
+      }
+    }
   },
 })
