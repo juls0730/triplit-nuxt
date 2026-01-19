@@ -1,4 +1,4 @@
-import { ref, readonly, type Ref, watch, isRef, computed } from 'vue'
+import { ref, readonly, type Ref, watch, isRef, computed, type ComputedRef } from 'vue'
 import type {
   SyncStatus,
   Models,
@@ -17,7 +17,7 @@ export interface UseQueryReturn<T> {
   error: Ref<Error | null>
 }
 
-export function toQueryRef<Q>(q: Q | Ref<Q> | (() => Q)): Ref<Q> {
+export function toQueryRef<Q>(q: Q | Ref<Q> | ComputedRef<Q> | (() => Q)): Ref<Q> {
   if (isRef(q)) return q
   if (typeof q === 'function') return computed(q as () => Q)
   return ref(q) as Ref<Q>
@@ -32,7 +32,7 @@ export async function useQuery<
 >(
   key: string,
   triplit: TriplitClient<M> | HttpClient<M>,
-  query: Q | Ref<Q> | (() => Q),
+  query: Q | Ref<Q> | ComputedRef<Q> | (() => Q),
   options: { syncStatus?: SyncStatus } = {},
 ) {
   const queryRef = toQueryRef(query)

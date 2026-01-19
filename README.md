@@ -105,7 +105,6 @@ You can configure the module in your `nuxt.config.ts`. The following options are
 ### Data Fetching
 
 - **`useQuery('key', triplit, triplit.query('table))`** - Subscribe to a query (multiple results)
-- **`useQueryOne('key', triplit, triplit.query('table))`** - Subscribe to a single entity
 - **`useConnectionStatus()`** - Monitor connection status
 
 All composables are SSR-ready and handle server/client differences automatically.
@@ -131,6 +130,15 @@ const { results: posts, fetching, unsubscribe } = useQuery(
 onUnmounted(() => {
   unsubscribe?.();
 });
+```
+
+### With a reactive query
+
+```typescript
+const route = useRoute()
+const topicId = computed(() => route.params.topicId)
+const query = computed(() => client.query('todos').Where('id', '=', topicId))
+const { results: todos, fetching } = useQuery('todos', client, query)
 ```
 
 ### With Insert

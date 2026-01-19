@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.3.0a
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.0...v0.3.0a)
+
+### 🩹 Fixes
+
+- Add ComputedRef to useQuery's query argument type
+- Update README
+
 ## v0.3.0
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.2.2...v0.3.0)
