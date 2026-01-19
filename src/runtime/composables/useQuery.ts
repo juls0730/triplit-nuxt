@@ -1,4 +1,4 @@
-import { ref, readonly, type Ref } from 'vue'
+import { ref, readonly, type Ref, watch, isRef, computed } from 'vue'
 import type {
   SyncStatus,
   Models,
@@ -17,6 +17,12 @@ export interface UseQueryReturn<T> {
   error: Ref<Error | null>
 }
 
+export function toQueryRef<Q>(q: Q | Ref<Q> | (() => Q)): Ref<Q> {
+  if (isRef(q)) return q
+  if (typeof q === 'function') return computed(q as () => Q)
+  return ref(q) as Ref<Q>
+}
+
 /**
  * Fully type-safe useQuery composable
  */
@@ -26,9 +32,11 @@ export async function useQuery<
 >(
   key: string,
   triplit: TriplitClient<M> | HttpClient<M>,
-  query: Q,
+  query: Q | Ref<Q> | (() => Q),
   options: { syncStatus?: SyncStatus } = {},
 ) {
+  const queryRef = toQueryRef(query)
+
   type T = FetchResult<M, Q, 'many'> | undefined
 
   const results = useState<T>(key)
@@ -36,41 +44,88 @@ export async function useQuery<
   const clientFetching = ref(true)
   const error = ref<Error | null>(null)
 
-  let unsubscribe: (() => void) | undefined = undefined
-  // TODO: handle errors better
-  if (import.meta.server) {
-    // SSR logic
+  let currentUnsubscribe: (() => void) | undefined
+
+  const runQuery = async (q: Q) => {
+    fetching.value = true
+    clientFetching.value = true
+    error.value = null
+
+    if (import.meta.server) {
+      try {
+        const data = await triplit.fetch(q)
+        results.value = data as T
+      }
+      catch (err) {
+        error.value = err instanceof Error ? err : new Error(String(err))
+      }
+      finally {
+        fetching.value = false
+        clientFetching.value = false
+      }
+      return
+    }
+
+    if (currentUnsubscribe) {
+      currentUnsubscribe()
+      currentUnsubscribe = undefined
+    }
+
     try {
-      const data = await triplit.fetch(query)
-      results.value = data
+      const snapshot = await triplit.fetch(q)
+      results.value = snapshot as T
     }
     catch (err) {
       error.value = err instanceof Error ? err : new Error(String(err))
-      clientFetching.value = false
     }
-    finally {
+
+    if ('subscribe' in triplit) {
+      currentUnsubscribe = triplit.subscribe(
+        q,
+        (data) => {
+          results.value = data as T
+          clientFetching.value = false
+          fetching.value = false
+        },
+        (err) => {
+          error.value = err as Error
+          clientFetching.value = false
+          fetching.value = false
+        },
+        options,
+      )
+    }
+    else {
       fetching.value = false
     }
   }
-  else if ('subscribe' in triplit) {
-    // fetch items before subscribing so that we dont subscribe and get empty data immediately (because its fetching the data)
-    // then get the actual data when its ready (causing a flash of empty data)
-    await triplit.fetch(query)
 
-    unsubscribe = triplit.subscribe(
-      query,
-      (data) => {
-        results.value = data
-        clientFetching.value = false
-        fetching.value = false
+  // TODO: handle errors better
+  if (!import.meta.server) {
+    watch(
+      queryRef,
+      async (newQ, _oldQ, onCleanup) => {
+        await runQuery(newQ)
+
+        onCleanup(() => {
+          if (currentUnsubscribe) {
+            currentUnsubscribe()
+            currentUnsubscribe = undefined
+          }
+        })
       },
-      (err) => {
-        error.value = err as Error
-        clientFetching.value = false
-        fetching.value = false
-      },
-      options,
+      { immediate: true },
     )
+  }
+  else {
+    await runQuery(queryRef.value)
+  }
+
+  const unsubscribe = () => {
+    if (currentUnsubscribe) {
+      currentUnsubscribe()
+      currentUnsubscribe = undefined
+    }
   }
 
   return {

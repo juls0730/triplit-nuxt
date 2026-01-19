@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.3.0
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.2.2...v0.3.0)
+
+### 💥 Breaking Changes
+
+- remove useQueryOne. If you want to achieve the functionality of useQueryOne, use useQuery, and add .Limit(1) to the query
+
+### ✨ New Features
+
+- useQuery can now take in a reactive query! This means you can now use useQuery with reactive queries, and when the query changes, the data will be updated
+  Example:
+  ```ts
+  const route = useRoute()
+  const topicId = computed(() => route.params.topicId)
+  const query = computed(() => client.query('todos').Where('id', '=', topicId))
+  // when topicId changes, the data will be updated!
+  const { results: todos, fetching } = useQuery('todos', client, query)
+  ```
+
 ## v0.2.1
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.2.0...v0.2.1)
