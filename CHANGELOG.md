@@ -1,5 +1,17 @@
 # Changelog
 
+## 🚧 v0.3.1-prerelease.0
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.0a...v0.3.1-prerelease.0)
+
+### ⚡️ Performance
+
+- Use the undocumented subscribeWithStatus method to subscribe to queries, 
+  without pre-fetching data, but still preventing empty data from being returned.
+  This halves the number of requests made to the triplit server from the client,
+  but I am not entirely confident in this change, thsu why I am releasing it as
+  a prerelease.
+
 ## v0.3.0a
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.0...v0.3.0a)

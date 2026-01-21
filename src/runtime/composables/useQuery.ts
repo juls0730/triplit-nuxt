@@ -71,32 +71,26 @@ export async function useQuery<
       currentUnsubscribe = undefined
     }
 
-    try {
-      const snapshot = await triplit.fetch(q)
-      results.value = snapshot as T
-    }
-    catch (err) {
-      error.value = err instanceof Error ? err : new Error(String(err))
-    }
-
     if ('subscribe' in triplit) {
-      currentUnsubscribe = triplit.subscribe(
+      currentUnsubscribe = triplit.subscribeWithStatus(
         q,
         (data) => {
-          results.value = data as T
           clientFetching.value = false
-          fetching.value = false
-        },
-        (err) => {
-          error.value = err as Error
-          clientFetching.value = false
-          fetching.value = false
+          fetching.value = data.fetching
+
+          if (data.error) {
+            error.value = data.error
+            return
+          }
+
+          if (data.fetching) {
+            return
+          }
+
+          results.value = data.results as T
         },
         options,
       )
-    }
-    else {
-      fetching.value = false
     }
   }
 

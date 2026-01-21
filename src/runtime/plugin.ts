@@ -43,6 +43,7 @@ export default defineNuxtPlugin({
       }
 
       client = new TriplitClient(clientConfig)
+      console.log('[Triplit Nuxt Plugin] Created TriplitClient with autoConnect:', clientConfig.autoConnect ?? true)
     }
 
     if (client) {

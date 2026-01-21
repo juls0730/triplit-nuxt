@@ -62,6 +62,6 @@ onUnmounted(() => {
 
 <style scoped>
 .text-strike {
-  text-decoration: line-through;
+    text-decoration: line-through;
 }
 </style>
