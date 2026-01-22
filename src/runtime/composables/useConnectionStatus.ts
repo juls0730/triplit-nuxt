@@ -3,8 +3,8 @@ import type { TriplitClient, HttpClient, ConnectionStatus } from '@triplit/clien
 import { useNuxtApp } from '#app'
 
 export interface UseConnectionStatusReturn {
-  status: Readonly<Ref<ConnectionStatus>>
-  unsubscribe?: () => void
+    status: Readonly<Ref<ConnectionStatus>>
+    unsubscribe?: () => void
 }
 
 /**
@@ -12,26 +12,26 @@ export interface UseConnectionStatusReturn {
  * Returns 'OPEN' or 'CLOSED' on server (always OPEN for HTTP)
  */
 export function useConnectionStatus(): UseConnectionStatusReturn {
-  const nuxtApp = useNuxtApp()
-  const client = nuxtApp.$triplit as TriplitClient | HttpClient
+    const nuxtApp = useNuxtApp()
+    const client = nuxtApp.$triplit as TriplitClient | HttpClient
 
-  const status = ref<ConnectionStatus>(
-    import.meta.server ? 'OPEN' : 'CONNECTING',
-  )
-
-  let unsubscribe: (() => void) | undefined = undefined
-  if (!import.meta.server && client && 'connectionStatus' in client) {
-    status.value = (client as TriplitClient).connectionStatus
-
-    unsubscribe = (client as TriplitClient).onConnectionStatusChange(
-      (newStatus) => {
-        status.value = newStatus
-      },
+    const status = ref<ConnectionStatus>(
+        import.meta.server ? 'OPEN' : 'CONNECTING',
     )
-  }
 
-  return {
-    status: readonly(status),
-    unsubscribe,
-  }
+    let unsubscribe: (() => void) | undefined = undefined
+    if (!import.meta.server && client && 'connectionStatus' in client) {
+        status.value = (client as TriplitClient).connectionStatus
+
+        unsubscribe = (client as TriplitClient).onConnectionStatusChange(
+            (newStatus) => {
+                status.value = newStatus
+            },
+        )
+    }
+
+    return {
+        status: readonly(status),
+        unsubscribe,
+    }
 }

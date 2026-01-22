@@ -1,8 +1,34 @@
 # Changelog
 
+## 🚧 v0.3.1-prerelease.2
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.1-prerelease.1...v0.3.1-prerelease.2)
+
+### ✨ New Features
+
+- Use useAsyncData for useQuery to prevent duplicate fetches
+- Provide schema to triplit client. This means you can now use .Include in your queries!
+
+### 🎨 Code Style
+
+- Use 4 spaces for indentation
+
+### 🩹 Fixes
+
+- have a better way to handle the server handoff to the client and hydration.
+  I'm using an undocumented subscribeWithStatus method to subscribe to queries,
+  without pre-fetching data (and wasting a request), but still awaiting for
+  state to be correct before returning the data.
+
+## 🚧 v0.3.1-prerelease.1
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.1-prerelease.0...v0.3.1-prerelease.1)
+
 ## 🚧 v0.3.1-prerelease.0
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.0a...v0.3.1-prerelease.0)
+
+remove logs.
 
 ### ⚡️ Performance
 
