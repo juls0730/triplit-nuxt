@@ -47,12 +47,16 @@ export async function useQuery<
     const fetchingRemote = ref(false)
     let currentUnsubscribe: (() => void) | undefined
 
-    const { data: results, pending: fetching, error } = await useAsyncData<T>(key, async () => {
+    // dont use await here initially, because it breaks watching data when purely SSR
+    // I dont know exactly why, but I think I should have heeded this warning more carefully:
+    // > If you're using a custom useAsyncData wrapper, do not await it in the composable as that can cause unexpected behavior. See recipe for custom async data fetcher.
+    const asyncData = useAsyncData<T>(key, async () => {
         const q = queryRef.value
         if (import.meta.server) {
             return await triplit.fetch(q, options)
         }
     }, { dedupe: 'defer' })
+    const { data: results, pending: fetching, error } = asyncData
 
     if (import.meta.client) {
         let resolveInitial: () => void
@@ -60,7 +64,7 @@ export async function useQuery<
             resolveInitial = resolve
         })
 
-        watch(queryRef, (newQ, _oldQ, onCleanup) => {
+        watch(queryRef, (newQ: Q, _oldQ: any, onCleanup: (arg0: () => void) => void) => {
             if (currentUnsubscribe) {
                 currentUnsubscribe()
                 currentUnsubscribe = undefined
@@ -99,10 +103,14 @@ export async function useQuery<
             })
         }, { immediate: true })
 
-        // make sure we have at gotten the initial data even if we are the client and not SSR'd
+        await asyncData;
+
+        // make sure we have at least gotten the initial data even if we are the client and not SSR'd
         if (results.value === undefined) {
             await initialPromise
         }
+    } else {
+        await asyncData;
     }
 
     const unsubscribe = () => {

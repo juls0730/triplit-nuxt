@@ -63,7 +63,7 @@ import { schema } from '${schemaImportPath}'
 export type TriplitAppSchema = typeof schema;
 
 declare module '#triplit/schema' {
-  export const schema: TriplitAppSchema
+  export = schema
 }
 
 declare module '#app' {

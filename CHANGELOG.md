@@ -1,5 +1,17 @@
 # Changelog
 
+## 🚧 v0.3.1-prerelease.3
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.1-prerelease.2...v0.3.1-prerelease.3)
+
+### 🩹 Fixes
+
+- Computed queries will now update correctly if spawned on the client (idk how to explain this well).
+- The Triplit type template doesnt export schema as a named export anymore, it is 
+  now exported as a default export. This stops typescript from complaining that 
+  your schema is using a name that already exists because the type template was 
+  re-exporting it. You can still use the schema from #triplit/schema though.
+
 ## 🚧 v0.3.1-prerelease.2
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.1-prerelease.1...v0.3.1-prerelease.2)
