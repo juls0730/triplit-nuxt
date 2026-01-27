@@ -80,7 +80,7 @@ export async function useQuery<
                             return
                         }
 
-                        if (data.results !== undefined && !data.fetching) {
+                        if (data.results !== undefined) {
                             results.value = data.results as T
                         }
 
@@ -106,9 +106,7 @@ export async function useQuery<
         await asyncData;
 
         // make sure we have at least gotten the initial data even if we are the client and not SSR'd
-        if (results.value === undefined) {
-            await initialPromise
-        }
+        await initialPromise
     } else {
         await asyncData;
     }
