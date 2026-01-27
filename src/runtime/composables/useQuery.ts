@@ -80,7 +80,7 @@ export async function useQuery<
                             return
                         }
 
-                        if (data.results !== undefined) {
+                        if (data.results !== undefined && !data.fetching) {
                             results.value = data.results as T
                         }
 

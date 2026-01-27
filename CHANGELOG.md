@@ -1,5 +1,13 @@
 # Changelog
 
+## 🚧 v0.3.1-prerelease.4
+
+[compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.1-prerelease.3...v0.3.1-prerelease.4)
+
+### 🩹 Fixes
+
+- Fix bug where data was updated with empty values
+
 ## 🚧 v0.3.1-prerelease.3
 
 [compare changes](https://github.com/juls0730/triplit-nuxt/compare/v0.3.1-prerelease.2...v0.3.1-prerelease.3)
