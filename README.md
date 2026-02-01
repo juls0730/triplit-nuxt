@@ -84,15 +84,15 @@ You can configure the module in your `nuxt.config.ts`. The following options are
 ## Contribution
 
 <details>
-  <summary>Local development</summary>
+<summary>Local development</summary>
   
-  ```bash
-  # Install dependencies
-  npm install
+```bash
+# Install dependencies
+npm install
   
-  # Generate type stubs
-  npm run dev:prepare
-    ```
+# Generate type stubs
+npm run dev:prepare
+```
 
 </details>
 
