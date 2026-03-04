@@ -5,6 +5,17 @@
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
+> [!CAUTION]
+> This project has been archived because triplit is no longer an active
+> project, and is, from my view, officially dead. The triplit team joined
+> supabase, and has abandoned Triplit. The triplit.dev domain is, as of
+> writing, in client hold, and it's extremely unlikely to be renewed.
+> ***Use Triplit at your own risk***, I DO NOT recommend using it, especially
+> not after its death, but even death withstanding, save yourself the headache
+> and use something else, please. Unfortunately I do not know any actually
+> decent alternatives that satisfy *my* painpoints, but I'm sure you can
+> find a solution better than Triplit.
+
 > [!NOTE]
 > This module was written in a few hours with the help of LLMs. I have, of
 > course, put my own effort into fixing the crap that was generated, and I am
